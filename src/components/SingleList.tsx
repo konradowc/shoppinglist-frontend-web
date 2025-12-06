@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { ListClient } from "../clients/ListClient"
 
 export const SingleList = () => {
 
     const [listContents, setListContents] = useState("");
-    
-    const handleClick = async () => {
-        setListContents();
+
+    const handleListChange = (event: FormEvent<HTMLTextAreaElement>) => {
+        setListContents(event.currentTarget.value);
         ListClient.postList(listContents);
     }
 
     return (
         <>
-            <textarea rows={20} cols={30} />
-            <button onClick={handleClick}>Update List</button>
+            <textarea 
+                value={ listContents }
+                onInput = { handleListChange }
+                rows={ 20 } 
+                cols={ 30 } 
+            />
         </>
     );
 };
