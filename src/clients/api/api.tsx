@@ -3,7 +3,6 @@ import { getBackendURL } from "./env"
 //TO-DO make dynamic (tuple?)
 async function post(url : string, contents: string) : Promise<string> {
     try {
-        console.log("this: " + getBackendURL() + " that: " + url);
         const response: Response = 
             await fetch(
                 getBackendURL() + url,
@@ -12,7 +11,7 @@ async function post(url : string, contents: string) : Promise<string> {
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ list: contents })
+                    body: JSON.stringify({ list: contents }) // TO-DO: is currently hard-coded
                     // TO-DO: add credientials (RequestCredentials)
                 }
             );

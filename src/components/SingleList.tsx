@@ -6,17 +6,18 @@ export const SingleList = () => {
     const [listContents, setListContents] = useState("");
 
     const handleListChange = (event: FormEvent<HTMLTextAreaElement>) => {
-        setListContents(event.currentTarget.value);
-        ListClient.postList(listContents);
+        const _listContents = event.currentTarget.value;
+        setListContents(_listContents);
+        ListClient.postList(_listContents);
     }
 
-    return (
+    return(
         <>
             <textarea 
-                value={ listContents }
-                onInput = { handleListChange }
-                rows={ 20 } 
-                cols={ 30 } 
+                value={listContents}
+                onInput={handleListChange}
+                rows={20} 
+                cols={30} 
             />
         </>
     );
