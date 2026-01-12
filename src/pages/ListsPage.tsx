@@ -1,10 +1,10 @@
-import { SingleList } from "../components/SingleList";
+import { ManyLists } from "../components/ManyLists";
 
 export const ListsPage = () => {
 
     return (
         <div style={{ margin:"auto" }}>
-            <SingleList />
+            <ManyLists />
         </div>
     );
 };
