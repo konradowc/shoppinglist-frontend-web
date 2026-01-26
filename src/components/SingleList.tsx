@@ -8,7 +8,8 @@ type Props = {
 export const SingleList = ({ listId: _listId }: Props) => {
 
     const [listContents, setListContents] = useState("");
-    const [listName, setListName] = useState("My List");
+    const [oldListContents, setOldListContents] = useState(listContents);
+    const [listName, setListName] = useState("");
     const [listId, setListID] = useState(-1);
 
     useEffect(() => {
@@ -40,10 +41,31 @@ export const SingleList = ({ listId: _listId }: Props) => {
 
     }, [listId]);
 
-    const handleListChange = (event: FormEvent<HTMLTextAreaElement>) => {
-        const _listContents = event.currentTarget.value;
+    const handleListChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setListContents(event.currentTarget.value);
+    }
 
-        // TO-DO: optimize so not calculating every time, have a wait
+    const handleListNewLine = async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if(event.key !== "Enter") return;
+        else {
+            const newListContentsSplit = listContents.split("\n");
+            const oldListContentsSplit = oldListContents.split("\n");
+
+            let addedRows: string[] = [];
+            for(let i = 0; i < newListContentsSplit.length; i++) {
+                if(newListContentsSplit[i] != oldListContentsSplit[i]) 
+                    addedRows = [...addedRows, newListContentsSplit[i]];
+            }
+            console.log("added rows: " + addedRows);
+
+            await ListClient.addListRows(listId, addedRows); // not -1 safe
+
+            setOldListContents(listContents);
+        }
+
+        
+
+        // TO-DO: optimize so not calculating every time, have a wait; change algo
 /*
         const _listContentsSplit = _listContents.split("\n");
         const _listChangedRows = [];
@@ -54,7 +76,7 @@ export const SingleList = ({ listId: _listId }: Props) => {
         }
             */
 
-        setListContents(_listContents);
+        //setListContents(_listContents);
         //ListClient.addListRow(_listContents); // TO-DO
     }
 
@@ -69,11 +91,12 @@ export const SingleList = ({ listId: _listId }: Props) => {
         <>
             <input
                 value={listName}
-                onChange={handleNameChange} // only fires after focus gone
+                onChange={handleNameChange} // should only fire after focus gone TO-DO
             />
             <textarea
                 value={listContents}
-                onInput={handleListChange}
+                onChange={handleListChange}
+                onKeyDown={handleListNewLine}
                 rows={20} 
                 cols={30} 
             />
