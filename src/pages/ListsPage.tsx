@@ -1,10 +1,10 @@
-import { ManyLists } from "../components/ManyLists";
+import { ListView } from "../components/ListView";
 
 export const ListsPage = () => {
 
     return (
         <div style={{ margin:"auto" }}>
-            <ManyLists />
+            <ListView userId={1}/>
         </div>
     );
 };

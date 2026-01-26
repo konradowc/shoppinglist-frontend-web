@@ -1,11 +1,44 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { ListClient } from "../clients/ListClient"
 
-export const SingleList = () => {
+type Props = {
+    listId: number;
+};
+
+export const SingleList = ({ listId: _listId }: Props) => {
 
     const [listContents, setListContents] = useState("");
     const [listName, setListName] = useState("My List");
     const [listId, setListID] = useState(-1);
+
+    useEffect(() => {
+        // update state variable
+        setListID(_listId);
+
+    }, [_listId]);
+
+    useEffect(() => {
+        const fetchList = async () => {
+            if(listId === -1) return;
+
+            // fetch the list from backend
+            const listResponse = await ListClient.getList(listId);
+            console.log(listResponse);
+
+            // transform contents from string[] to string
+            let fullContents: string = "";
+            let arrContents: string[] = listResponse.contents;
+            for(let i: number = 0; i < arrContents.length; i++) {
+                fullContents += arrContents.at(i) + "\n";
+            }
+
+            setListName(listResponse.list_name);
+            setListContents(fullContents);
+        };
+
+        fetchList();
+
+    }, [listId]);
 
     const handleListChange = (event: FormEvent<HTMLTextAreaElement>) => {
         const _listContents = event.currentTarget.value;
@@ -35,7 +68,7 @@ export const SingleList = () => {
     return(
         <>
             <input
-                defaultValue={listName}
+                value={listName}
                 onChange={handleNameChange} // only fires after focus gone
             />
             <textarea
