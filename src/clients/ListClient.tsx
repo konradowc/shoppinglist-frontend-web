@@ -46,7 +46,19 @@ export class ListClient {
         return api.patch(`/list/${listId}/metadata`,
             {
                 list_name: newListName,
-                owner_id: -1 // MAYBE-TO-DO: change in future?
+                owner_id: -1, // MAYBE-TO-DO: change in future?
+                editor_ids: null
+            }
+        ).then(response => response.data)
+        .catch(error => console.error(error));
+    }
+
+    static async updateListEditors(listId: number, editors: string[]) {
+        return api.patch(`/list/${listId}/metadata`,
+            {
+                list_name: null,
+                owner_id: -1, // MAYBE-TO-DO: change in future?
+                editor_ids: editors
             }
         ).then(response => response.data)
         .catch(error => console.error(error));

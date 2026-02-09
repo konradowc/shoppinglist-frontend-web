@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { SingleList } from "./SingleList";
 import { ListClient } from "../clients/ListClient"
+import { ShareListModal } from "./modals/ShareListModal"
 
 import { INVALID_LIST_ID, INVALID_USER_ID } from "../constants/constants"
 
@@ -18,6 +19,8 @@ export const ListView = () => {
 
     const [listIdsArray, setListIdsArray] = useState<number[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    const [shareModalOpen, setShareModalOpen] = useState(false);
 
     useEffect(() => {
         // fetch list info from DB
@@ -47,6 +50,7 @@ export const ListView = () => {
         const updatedListIdsArray: number[] =
             [...listIdsArray.slice(0, currentIndex+1), newList.list_id, ...listIdsArray.slice(currentIndex)];
         setListIdsArray(updatedListIdsArray);
+        setShareModalOpen(false);
         setCurrentIndex(oldIndex+1);
     };
 
@@ -54,23 +58,26 @@ export const ListView = () => {
         ListClient.deleteList(getCurrentListId());
         setListIdsArray(prev => prev.filter((_, i) => i !== currentIndex));
 
+        setShareModalOpen(false);
         if(currentIndex == listIdsArray.length-1) setCurrentIndex(currentIndex-1); // move back to have index remain in bounds 
     };
 
     const handleLeftListButton = () => {
         if(currentIndex <= 0) return;
 
-        else setCurrentIndex(currentIndex-1);
+        setShareModalOpen(false);
+        setCurrentIndex(currentIndex-1);
     };
 
     const handleRightListButton = () => {
         if(currentIndex >= listIdsArray.length-1) return;
 
-        else setCurrentIndex(currentIndex+1);
+        setShareModalOpen(false);
+        setCurrentIndex(currentIndex+1);
     };
 
     const handleShareButton = () => {
-
+        setShareModalOpen(!shareModalOpen);
     };
 
     // handles out-of-bounds errors
@@ -89,7 +96,10 @@ export const ListView = () => {
             <button name="delListBtn" onClick={handleDeleteListButton}>Delete</button>
             <button name="leftListBtn" onClick={handleLeftListButton}>&lt;</button>
             <button name="rightListBtn" onClick={handleRightListButton}>&gt;</button>  
-            <button name="shareBtn" onClick={handleShareButton}>Share</button>          
+            <button name="shareBtn" onClick={handleShareButton}>Share</button>
+            {shareModalOpen && 
+                <ShareListModal listId={getCurrentListId()}></ShareListModal>
+            }      
         </>
     );
 };
