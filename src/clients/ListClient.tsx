@@ -1,9 +1,9 @@
-import { api } from "./api/api"
+import { api } from './api/api'
 
 export class ListClient {
 
     // TO-DO: hardcoded, should use DTO?
-    // note: listIds (number type) do not match size of long in Java
+    // note: listIds (number type) do not match size of long in Java (and possibly not size of number in Postgres)
 
     static async getList(listId : number) {
         console.log("gerttig" + listId);
@@ -46,7 +46,7 @@ export class ListClient {
         return api.patch(`/list/${listId}/metadata`,
             {
                 list_name: newListName,
-                owner_id: -1 // REVIEW
+                owner_id: -1 // MAYBE-TO-DO: change in future?
             }
         ).then(response => response.data)
         .catch(error => console.error(error));

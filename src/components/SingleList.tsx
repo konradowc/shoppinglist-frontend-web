@@ -1,16 +1,19 @@
 import { FormEvent, useEffect, useState } from "react";
 import { ListClient } from "../clients/ListClient"
 
+import { INVALID_LIST_ID } from "../constants/constants"
+
 type Props = {
     listId: number;
 };
 
+/* individual list functionality */
 export const SingleList = ({ listId: _listId }: Props) => {
 
     const [listContents, setListContents] = useState("");
     const [oldListContents, setOldListContents] = useState(listContents);
     const [listName, setListName] = useState("");
-    const [listId, setListID] = useState(-1);
+    const [listId, setListID] = useState(INVALID_LIST_ID);
 
     useEffect(() => {
         // update state variable
@@ -18,9 +21,12 @@ export const SingleList = ({ listId: _listId }: Props) => {
 
     }, [_listId]);
 
+    /*
+    get list on listID change
+    */
     useEffect(() => {
         const fetchList = async () => {
-            if(listId === -1) return;
+            if(listId === INVALID_LIST_ID) return;
 
             // fetch the list from backend
             const listResponse = await ListClient.getList(listId);
@@ -62,22 +68,6 @@ export const SingleList = ({ listId: _listId }: Props) => {
 
             setOldListContents(listContents);
         }
-
-        
-
-        // TO-DO: optimize so not calculating every time, have a wait; change algo
-/*
-        const _listContentsSplit = _listContents.split("\n");
-        const _listChangedRows = [];
-        for(let i = 0; i < Math.max(listContents.length, _listContentsSplit.length); i++) {
-            if(listContents[i] != _listContentsSplit[i]) {
-
-            }
-        }
-            */
-
-        //setListContents(_listContents);
-        //ListClient.addListRow(_listContents); // TO-DO
     }
 
     const handleNameChange = (event: FormEvent<HTMLInputElement>) => {
