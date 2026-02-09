@@ -6,19 +6,19 @@ export class ListClient {
     // note: listIds (number type) do not match size of long in Java (and possibly not size of number in Postgres)
 
     static async getList(listId : number) {
-        console.log("gerttig" + listId);
+        console.log("Getting list " + listId);
         return api.get(`/list/${listId}`,
             // no body
         ).then(response => response.data)
         .catch(error => console.error(error));
     }
 
-    static async createList(listName : string, listContents : string[]) {
+    static async createList(listName : string, listContents : string[], ownerId : number) {
         return api.post(`/list`,
             {
                 list_name: listName,
                 contents: listContents,
-                owner_id: 1
+                owner_id: ownerId
             }
         ).then(response => response.data)
         .catch(error => console.error(error));

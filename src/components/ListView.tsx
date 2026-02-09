@@ -5,23 +5,19 @@ import { ListClient } from "../clients/ListClient"
 
 import { INVALID_LIST_ID, INVALID_USER_ID } from "../constants/constants"
 
+import { useAppContext } from "../context/AppContext"
+
 type Props = {
     userId: number
 };
 
 /* component holding all things related to lists */
-export const ListView = ({ userId: _userId }: Props) => {
+export const ListView = () => {
 
-    const [userId, setUserId] = useState(INVALID_USER_ID); // could change in future to use AppContext (need to do something on update, though)
+    const { userId, setUserId } = useAppContext();
 
     const [listIdsArray, setListIdsArray] = useState<number[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-
-    useEffect(() => {
-        // update state variable
-        setUserId(_userId);
-    }, [_userId]);
-
 
     useEffect(() => {
         // fetch list info from DB
@@ -29,7 +25,7 @@ export const ListView = ({ userId: _userId }: Props) => {
             if(userId === INVALID_USER_ID) return;
 
             const listIdsResponse = await ListClient.getListsByUser(userId);
-            console.log("Fetched automatically: " + listIdsResponse);
+            console.log("Fetched automatically: ", listIdsResponse);
 
             setCurrentIndex(0); // TO-DO: save last viewed list?
             setListIdsArray(listIdsResponse.listIds);
@@ -45,11 +41,11 @@ export const ListView = ({ userId: _userId }: Props) => {
         const newListTitle: string = "Untitled List";
         const newListContents: string[] = [];
 
-        const newList = await ListClient.createList(newListTitle, newListContents);
-        console.log("Made this new list: " + newList);
+        const newList = await ListClient.createList(newListTitle, newListContents, userId);
+        console.log("Made this new list: " + newList.list_id + " owned by " + newList.owner_id);
 
         const updatedListIdsArray: number[] =
-            [...listIdsArray.slice(0, currentIndex+1), newList.id, ...listIdsArray.slice(currentIndex)];
+            [...listIdsArray.slice(0, currentIndex+1), newList.list_id, ...listIdsArray.slice(currentIndex)];
         setListIdsArray(updatedListIdsArray);
         setCurrentIndex(oldIndex+1);
     };
@@ -79,7 +75,10 @@ export const ListView = ({ userId: _userId }: Props) => {
 
     // handles out-of-bounds errors
     const getCurrentListId = () => {
-        if(currentIndex < 0 || currentIndex >= listIdsArray.length) return -1;
+        if(currentIndex < 0 || currentIndex >= listIdsArray.length) {
+            console.log("List index error");
+            return INVALID_LIST_ID;
+        }
         else return listIdsArray[currentIndex];
     }
 

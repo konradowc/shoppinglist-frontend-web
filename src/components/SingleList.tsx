@@ -52,6 +52,7 @@ export const SingleList = ({ listId: _listId }: Props) => {
     }
 
     const handleListNewLine = async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if(listId == INVALID_LIST_ID) { console.log("Invalid list ID"); return; }
         if(event.key !== "Enter") return;
         else {
             const newListContentsSplit = listContents.split("\n");

@@ -8,7 +8,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     const [userId, setUserId] = useState(INVALID_USER_ID);
 
     const setUserIdState = (id: number) => {
-        console.log("Setting user ID");
+        console.log("Setting user ID (AppProvider)");
         setUserId(id);
     };
 
@@ -16,6 +16,5 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         <AppContext.Provider value={{ userId: userId, setUserId: setUserIdState }}>
             { children }
         </AppContext.Provider>
-
     );
 }
