@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const makeNewUserAndReturnId = async (): Promise<{id: number, pswrd: string}> => {
         // make a password (auto-generated)
 
-        // temporary (?) manual solution: just numbers
+        // temporary (?) manual solution: just numbers TO-DO
         let password = "";
         for(let i = 0; i < 10; i++) {
             password += Math.floor(Math.random() * 9).toString();

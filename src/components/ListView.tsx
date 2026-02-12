@@ -48,7 +48,7 @@ export const ListView = () => {
         console.log("Made this new list: " + newList.list_id + " owned by " + newList.owner_id);
 
         const updatedListIdsArray: number[] =
-            [...listIdsArray.slice(0, currentIndex+1), newList.list_id, ...listIdsArray.slice(currentIndex)];
+            [...listIdsArray.slice(0, currentIndex+1), newList.list_id, ...listIdsArray.slice(currentIndex+1)];
         setListIdsArray(updatedListIdsArray);
         setShareModalOpen(false);
         setCurrentIndex(oldIndex+1);
