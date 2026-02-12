@@ -41,6 +41,7 @@ export const SingleList = ({ listId: _listId }: Props) => {
 
             setListName(listResponse.list_name);
             setListContents(fullContents);
+            setOldListContents(fullContents); // temp
         };
 
         fetchList();
@@ -51,6 +52,7 @@ export const SingleList = ({ listId: _listId }: Props) => {
         setListContents(event.currentTarget.value);
     }
 
+    // TO-DO
     const handleListNewLine = async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if(listId == INVALID_LIST_ID) { console.log("Invalid list ID"); return; }
         if(event.key !== "Enter") return;
