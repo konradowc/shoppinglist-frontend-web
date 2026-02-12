@@ -1,5 +1,8 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react"
 import { ListClient } from "../clients/ListClient"
+import { SseClient } from "../clients/SseClient"
+
+import { useAppContext } from "../context/AppContext"
 
 import { INVALID_LIST_ID } from "../constants/constants"
 
@@ -14,6 +17,10 @@ export const SingleList = ({ listId: _listId }: Props) => {
     const [oldListContents, setOldListContents] = useState(listContents);
     const [listName, setListName] = useState("");
     const [listId, setListID] = useState(INVALID_LIST_ID);
+
+    const { userId, setUserId } = useAppContext();
+
+    const [sseEventSource, setSseEventSource] = useState<EventSource>();
 
     useEffect(() => {
         // update state variable
@@ -42,6 +49,9 @@ export const SingleList = ({ listId: _listId }: Props) => {
             setListName(listResponse.list_name);
             setListContents(fullContents);
             setOldListContents(fullContents); // temp
+
+            // temp (move to service)
+            setSseEventSource(SseClient.connectSse(listId, userId));
         };
 
         fetchList();

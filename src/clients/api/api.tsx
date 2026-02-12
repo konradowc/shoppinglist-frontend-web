@@ -7,3 +7,8 @@ export const api = axios.create({
         'Content-Type': 'application/json',
     }
 });
+
+/* not related to axios, for starting server-side events */
+export const sseNewConnection = (path: string): EventSource => {
+    return new EventSource(getBackendURL() + "/" + path);
+}
