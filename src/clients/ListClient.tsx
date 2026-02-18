@@ -40,14 +40,12 @@ export class ListClient {
         .catch(error => console.error(error));
     }
 
-    //static async updateListRow(listId : number, row : number, rowContents : string) {}
-
     static async updateListName(listId : number, newListName : string) {
         return api.patch(`/list/${listId}/metadata`,
             {
                 list_name: newListName,
-                owner_id: -1, // MAYBE-TO-DO: change in future?
-                editor_ids: null
+                //owner_id: -1,
+                //editor_ids: null
             }
         ).then(response => response.data)
         .catch(error => console.error(error));
@@ -56,8 +54,8 @@ export class ListClient {
     static async updateListEditors(listId: number, editors: string[]) {
         return api.patch(`/list/${listId}/metadata`,
             {
-                list_name: null,
-                owner_id: -1, // MAYBE-TO-DO: change in future?
+                //list_name: null,
+                //owner_id: -1,
                 editor_ids: editors
             }
         ).then(response => response.data)
