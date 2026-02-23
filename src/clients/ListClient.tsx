@@ -34,7 +34,16 @@ export class ListClient {
     static async addListRows(listId : number, rowContents : string[]) {
         return api.patch(`/list/${listId}/contents`,
             {
-                contents_to_add: rowContents
+                content_to_add: rowContents
+            }
+        ).then(response => response.data)
+        .catch(error => console.error(error));
+    }
+
+    static async removeListRows(listId : number, rowIds : number[]) {
+        return api.patch(`/list/${listId}/contents`,
+            {
+                item_ids_to_remove: rowIds
             }
         ).then(response => response.data)
         .catch(error => console.error(error));
@@ -44,8 +53,6 @@ export class ListClient {
         return api.patch(`/list/${listId}/metadata`,
             {
                 list_name: newListName,
-                //owner_id: -1,
-                //editor_ids: null
             }
         ).then(response => response.data)
         .catch(error => console.error(error));
@@ -54,8 +61,6 @@ export class ListClient {
     static async updateListEditors(listId: number, editors: string[]) {
         return api.patch(`/list/${listId}/metadata`,
             {
-                //list_name: null,
-                //owner_id: -1,
                 editor_ids: editors
             }
         ).then(response => response.data)
