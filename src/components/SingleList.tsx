@@ -41,7 +41,7 @@ export const SingleList = ({ listId: _listId }: Props) => {
 
             // transform contents from string[] to string
             let fullContents: string = "";
-            let arrContents: string[] = listResponse.contents;
+            let arrContents: string[] = listResponse.contents.map((content: any) => { return content.itemName });
             for(let i: number = 0; i < arrContents.length; i++) {
                 fullContents += arrContents.at(i) + "\n";
             }
