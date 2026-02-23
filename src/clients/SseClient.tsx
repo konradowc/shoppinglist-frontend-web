@@ -10,9 +10,7 @@ export class SseClient {
 
         /* set up */
         eventSource.addEventListener("updatedListContents", eventCallback);
-
         eventSource.onerror = errorCallback;
-
 
         return eventSource;
     }

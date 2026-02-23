@@ -49,9 +49,6 @@ export const SingleList = ({ listId: _listId }: Props) => {
             setListName(listResponse.list_name);
             setListContents(fullContents);
             setOldListContents(fullContents); // temp
-
-            // temp (move to service)
-            SseService.initialize(userId);
         };
 
         fetchList();
