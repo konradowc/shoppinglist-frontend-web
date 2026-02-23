@@ -2,17 +2,16 @@ import { sseNewConnection } from "./api/api"
 
 export class SseClient {
 
-    static connectSse(listId: number, userId: number): EventSource {
-        const eventSource = sseNewConnection("sse/" + listId + "/" + userId);
+    static connectSse(userId: number, 
+    eventCallback: (event: MessageEvent<any>) => void, errorCallback: (error: Event) => void): EventSource {
+        
+        console.log("Making a new SSE connection");
+        const eventSource = sseNewConnection("sse/" + userId);
 
         /* set up */
-        eventSource.addEventListener(listId.toString(), (event) => {
-            console.log("sse got this: ", event.data)
-        });
+        eventSource.addEventListener("updatedListContents", eventCallback);
 
-        eventSource.onerror = (error) => {
-            console.log("sse error: ", error);
-        }
+        eventSource.onerror = errorCallback;
 
 
         return eventSource;

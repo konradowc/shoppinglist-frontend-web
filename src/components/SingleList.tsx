@@ -6,6 +6,8 @@ import { useAppContext } from "../context/AppContext"
 
 import { INVALID_LIST_ID } from "../constants/constants"
 
+import { SseService } from "../services/SseService"
+
 type Props = {
     listId: number;
 };
@@ -19,8 +21,6 @@ export const SingleList = ({ listId: _listId }: Props) => {
     const [listId, setListID] = useState(INVALID_LIST_ID);
 
     const { userId, setUserId } = useAppContext();
-
-    const [sseEventSource, setSseEventSource] = useState<EventSource>();
 
     useEffect(() => {
         // update state variable
@@ -51,7 +51,7 @@ export const SingleList = ({ listId: _listId }: Props) => {
             setOldListContents(fullContents); // temp
 
             // temp (move to service)
-            setSseEventSource(SseClient.connectSse(listId, userId));
+            SseService.initialize(userId);
         };
 
         fetchList();
