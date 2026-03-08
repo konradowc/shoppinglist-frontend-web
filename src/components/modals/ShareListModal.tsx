@@ -1,15 +1,13 @@
 import { FormEvent, useState, useEffect } from 'react'
 
 import { ListClient } from "../../clients/ListClient"
-import { useAppContext } from "../../context/AppContext"
+import { Button, Title } from '@mantine/core';
 
 type Props = {
     listId: number;
 };
 
 export const ShareListModal = ({ listId }: Props) => {
-
-    const {userId, setUserId} = useAppContext();
 
     const [shareTextField, setShareTextField] = useState("");
     const [editors, setEditors] = useState([]);
@@ -40,17 +38,17 @@ export const ShareListModal = ({ listId }: Props) => {
 
     return (
         <>
-            <h3>Share with:</h3>
+            <Title order={3}>Share with:</Title>
             <input 
                 value={shareTextField}
                 onChange={handleShareTextFieldChange}
             />
-            <button
+            <Button
                 name="sendButton"
                 onClick={handleSendButton}>
                     Send
-            </button>
-            <h4>Already shared with: {editors.join(", ")}</h4>
+            </Button>
+            <Title order={4}>Already shared with: {editors.join(", ")}</Title>
         </>
     );
 };

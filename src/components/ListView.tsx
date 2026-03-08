@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useQueryClient, useMutation } from "@tanstack/react-query"
 
 import { SingleList } from "./SingleList";
 import { ListClient } from "../clients/ListClient"
@@ -7,6 +8,8 @@ import { ShareListModal } from "./modals/ShareListModal"
 import { INVALID_LIST_ID, INVALID_USER_ID } from "../constants/constants"
 
 import { useAppContext } from "../context/AppContext"
+import { useListOfLists } from "../hooks/useListofLists";
+import { Button, Group, Stack } from "@mantine/core";
 
 type Props = {
     userId: number
@@ -15,91 +18,133 @@ type Props = {
 /* component holding all things related to lists */
 export const ListView = () => {
 
-    const { userId, setUserId } = useAppContext();
+    // global data / clients
+    const { userId } = useAppContext();
+    const queryClient = useQueryClient();
 
-    const [listIdsArray, setListIdsArray] = useState<number[]>([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
+    // server data
+    const { listIds, status } = useListOfLists(userId);
 
-    const [shareModalOpen, setShareModalOpen] = useState(false);
+    // API
+    const createList = useMutation({
+        mutationFn: (input: { listName: string, listContents: string[], ownerId: number }) => {
+            return ListClient.createList(input.listName, input.listContents, input.ownerId);
+        },
+    });
+    const deleteList = useMutation({
+        mutationFn: ({ listId }: { listId: number }) => {
+            return ListClient.deleteList(listId)
+        },
+    });
 
+    // local data
+    const [currentListId, setCurrentListId] = useState<number | null>(null);
+
+    // UI
+    const [shareModalOpen, setShareModalOpen] = useState<boolean>(false);
+
+    // handles cases where list is empty (new account, or deleted all), 
+    // and where curr id is null (just loaded in)
     useEffect(() => {
-        // fetch list info from DB
-        const fetchListIds = async () => {
-            if(userId === INVALID_USER_ID) return;
+    
+        if(listIds) {
+            if(listIds.length == 0)
+                createListAndNavigateToIt();
+            else if(currentListId == null)
+                setCurrentListId(listIds[0]);
+        }
+            
+    }, [listIds]);
 
-            const listIdsResponse = await ListClient.getListsByUser(userId);
-            console.log("Fetched automatically: ", listIdsResponse);
+    /* 
+    functionality methods
+    */ 
 
-            setCurrentIndex(0); // TO-DO: save last viewed list?
-            setListIdsArray(listIdsResponse.listIds);
-        };
+    const createListAndNavigateToIt = async () => { // TO-DO: this will put to back of listoflists for now, change in future
+        
+        createList.mutateAsync({ listName: "Untitled List", listContents: [], ownerId: userId });
+        console.log("ListView: created list");
 
-        fetchListIds();
+        // (wait for createList to return)
 
-    }, [userId]);
+        if(createList.isSuccess) {
+            queryClient.invalidateQueries({ queryKey: ["user", userId] }); // force re-fetch (will take some time)
+            setCurrentListId(createList.data.list_id); // navigate to the new list
+            // TO-DO: pressing <- or -> while the ["user", userId] query is being re-fetched will not be good (would not find our current list ID in list of lists)
+        }
+        else {
+            console.log("not success?");
+        }
+    }
+
+    const deleteListAndNavigateAwayFromIt = () => {
+
+        if(currentListId === null) return; // TS requires
+
+        deleteList.mutateAsync({ listId: currentListId });
+
+        queryClient.invalidateQueries({ queryKey: ["user", userId] }); // force re-fetch (will take some time)
+
+    }
+
+    // fallback: return old list id
+    const findListRelativeToGiven = (listId: number, relativeIndex: number) => {
+        const index = listIds.indexOf(listId);
+        if(index == -1) { console.error("listId not found in the list"); return listId; }
+
+        const newIndex = index + relativeIndex;
+        if(newIndex < 0 || newIndex >= listIds.length) { console.log("too far-but it's ok"); return listId; } // fallback
+        else {
+            return listIds[newIndex];
+        }
+    }
+
+    /*
+    UI handlers
+    */
 
     const handleNewListButton = async () => {
-        const oldIndex = currentIndex; // save in case of user movement during blocking 'await'
-
-        const newListTitle: string = "Untitled List";
-        const newListContents: string[] = [];
-
-        const newList = await ListClient.createList(newListTitle, newListContents, userId);
-        console.log("Made this new list: " + newList.list_id + " owned by " + newList.owner_id);
-
-        const updatedListIdsArray: number[] =
-            [...listIdsArray.slice(0, currentIndex+1), newList.list_id, ...listIdsArray.slice(currentIndex+1)];
-        setListIdsArray(updatedListIdsArray);
+        createListAndNavigateToIt();
         setShareModalOpen(false);
-        setCurrentIndex(oldIndex+1);
     };
 
     const handleDeleteListButton = () => {
-        ListClient.deleteList(getCurrentListId());
-        setListIdsArray(prev => prev.filter((_, i) => i !== currentIndex));
-
+        deleteListAndNavigateAwayFromIt();
         setShareModalOpen(false);
-        if(currentIndex == listIdsArray.length-1) setCurrentIndex(currentIndex-1); // move back to have index remain in bounds 
     };
 
     const handleLeftListButton = () => {
-        if(currentIndex <= 0) return;
-
-        setShareModalOpen(false);
-        setCurrentIndex(currentIndex-1);
+        if(currentListId != null)
+            setCurrentListId(findListRelativeToGiven(currentListId, -1));
     };
 
     const handleRightListButton = () => {
-        if(currentIndex >= listIdsArray.length-1) return;
-
-        setShareModalOpen(false);
-        setCurrentIndex(currentIndex+1);
+        if(currentListId != null)
+            setCurrentListId(findListRelativeToGiven(currentListId, 1));    
     };
 
     const handleShareButton = () => {
         setShareModalOpen(!shareModalOpen);
     };
 
-    // handles out-of-bounds errors
-    const getCurrentListId = () => {
-        if(currentIndex < 0 || currentIndex >= listIdsArray.length) {
-            console.log("List index error");
-            return INVALID_LIST_ID;
-        }
-        else return listIdsArray[currentIndex];
-    }
-
     return (
+        currentListId != null && // ONLY render if listIdsArray has contents & currentListId is not Invalid: note this will cause problems if userId updates (out of sync due to useState)
         <>
-            <SingleList listId={getCurrentListId()} />
-            <button name="newListBtn" onClick={handleNewListButton}>New List</button>
-            <button name="delListBtn" onClick={handleDeleteListButton}>Delete</button>
-            <button name="leftListBtn" onClick={handleLeftListButton}>&lt;</button>
-            <button name="rightListBtn" onClick={handleRightListButton}>&gt;</button>  
-            <button name="shareBtn" onClick={handleShareButton}>Share</button>
-            {shareModalOpen && 
-                <ShareListModal listId={getCurrentListId()}></ShareListModal>
-            }      
+            <Group>
+                <Button name="leftListBtn" onClick={handleLeftListButton}>&lt;</Button>
+                <Stack>
+                    <SingleList listId={currentListId} />
+                    <Group>
+                        <Button name="newListBtn" onClick={handleNewListButton}>New List</Button>
+                        <Button name="delListBtn" onClick={handleDeleteListButton}>Delete</Button>
+                        <Button name="shareBtn" onClick={handleShareButton}>Share</Button>
+                    </Group>
+                </Stack>
+                <Button name="rightListBtn" onClick={handleRightListButton}>&gt;</Button>  
+                {shareModalOpen && 
+                    <ShareListModal listId={currentListId}></ShareListModal>
+                } 
+            </Group>
         </>
     );
 };

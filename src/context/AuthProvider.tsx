@@ -8,7 +8,7 @@ import { setUserCookies, getUserCookies } from "../utils/cookiesUtils"
 import { UserClient } from "../clients/UserClient"
 import { useAppContext } from "../context/AppContext"
 
-import { SseService } from "../services/SseService"
+import { sseServiceSingleton } from "../services/SseService"
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
 
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
             console.log("Set userId to " + uidAndPswrd.id + " and pswrd to " + uidAndPswrd.pswrd);
 
             // TO-DO: TEMP location
-            SseService.initialize(uidAndPswrd.id);
+            sseServiceSingleton.initializeTemp(uidAndPswrd.id);
         };
 
         initUserId();//TEMP TO-DO: and SSEService

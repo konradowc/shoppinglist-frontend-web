@@ -1,104 +1,129 @@
-import { FormEvent, useEffect, useState } from "react"
-import { ListClient } from "../clients/ListClient"
-import { SseClient } from "../clients/SseClient"
+import { useEffect, useRef, useState } from "react"
 
-import { useAppContext } from "../context/AppContext"
+import { useList } from "../hooks/useList"
 
-import { INVALID_LIST_ID } from "../constants/constants"
-
-import { SseService } from "../services/SseService"
+import { Button, Paper, Table, TextInput } from '@mantine/core';
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { ListClient } from "../clients/ListClient";
 
 type Props = {
     listId: number;
 };
 
 /* individual list functionality */
-export const SingleList = ({ listId: _listId }: Props) => {
+export const SingleList = ({ listId }: Props) => {
 
-    const [listContents, setListContents] = useState("");
-    const [oldListContents, setOldListContents] = useState(listContents);
-    const [listName, setListName] = useState("");
-    const [listId, setListID] = useState(INVALID_LIST_ID);
+    // server data
+    const { name, contents, editors, status } = useList(listId); // wrapper for useQuery: automatically updates on listId change
+    const queryClient = useQueryClient();
+    // optimistic update data
+    //const [contentsInFlight, setContentsInFlight] = useState();
 
-    const { userId, setUserId } = useAppContext();
-
-    useEffect(() => {
-        // update state variable
-        setListID(_listId);
-
-    }, [_listId]);
-
-    /*
-    get list on listID change
-    */
-    useEffect(() => {
-        const fetchList = async () => {
-            if(listId === INVALID_LIST_ID) return;
-
-            // fetch the list from backend
-            const listResponse = await ListClient.getList(listId);
-            console.log(listResponse);
-
-            // transform contents from string[] to string
-            let fullContents: string = "";
-            let arrContents: string[] = listResponse.contents.map((content: any) => { return content.itemName });
-            for(let i: number = 0; i < arrContents.length; i++) {
-                fullContents += arrContents.at(i) + "\n";
-            }
-
-            setListName(listResponse.list_name);
-            setListContents(fullContents);
-            setOldListContents(fullContents); // temp
-        };
-
-        fetchList();
-
-    }, [listId]);
-
-    const handleListChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setListContents(event.currentTarget.value);
-    }
-
-    // TO-DO
-    const handleListNewLine = async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if(listId == INVALID_LIST_ID) { console.log("Invalid list ID"); return; }
-        if(event.key !== "Enter") return;
-        else {
-            const newListContentsSplit = listContents.split("\n");
-            const oldListContentsSplit = oldListContents.split("\n");
-
-            let addedRows: string[] = [];
-            for(let i = 0; i < newListContentsSplit.length; i++) {
-                if(newListContentsSplit[i] != oldListContentsSplit[i]) 
-                    addedRows = [...addedRows, newListContentsSplit[i]];
-            }
-            console.log("added rows: " + addedRows);
-
-            await ListClient.addListRows(listId, addedRows); // not -1 safe
-
-            setOldListContents(listContents);
+    // API
+    const addRow = useMutation({
+        mutationFn: (input: { newContent: string}) => {
+            return ListClient.addListRows(listId, [input.newContent]);
+        },
+        onMutate: (input: { newContent: string}) => {
+            queryClient.cancelQueries({ queryKey: ["list", listId] }); // so data doesn't get over-written
+            queryClient.setQueryData(["list", listId], (prevData: any) => {
+                return {
+                    ...prevData,
+                    contents: [...contents, {id: crypto.randomUUID(), // in very rare case of collision, may be brief visual glitch before server fetch
+                                            itemName: input.newContent,
+                                            expandable: false,
+                                            optimistic: true
+                                            }]
+                };
+            });
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["list", listId] }); // force re-fetch either way, success or not (will take some time)
+                                                                            // if fail, will just overwrite optimistic update
         }
+    });
+    const deleteRow = useMutation({
+        mutationFn: (input: { itemId: number}) => {
+            return ListClient.removeListRows(listId, [input.itemId]);
+        },
+        onMutate: (input: { itemId: number}) => {
+            queryClient.cancelQueries({ queryKey: ["list", listId] }); 
+            queryClient.setQueryData(["list", listId], contents.filter((content: any) => !(content.id === input.itemId)));
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["list", listId] });
+        }
+    });
+    const editName = useMutation({
+        mutationFn: (input: { newName: string }) => {
+            return ListClient.updateListName(listId, input.newName);
+        },
+        onMutate: () => {
+            queryClient.cancelQueries({ queryKey: ["list", listId] });
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["list", listId] });
+        }
+    });
+
+    // local data
+    const [inputBox, setInputBox] = useState("");
+    const [localNameBox, setLocalNameBox] = useState("");
+    const nameBoxRef = useRef<HTMLInputElement>(null);
+
+    // update local variable to server state
+    // will override user changes (if any not saved)
+    useEffect(() => {
+        if(name != undefined)
+            setLocalNameBox(name);
+    }, [name])
+
+    const handleCreateItem = async () => {
+        console.log("enter input");
+        addRow.mutate({newContent: inputBox});
     }
 
-    const handleNameChange = (event: FormEvent<HTMLInputElement>) => {
-        const _listName = event.currentTarget.value;
+    const handleEditName = () => {
 
-        setListName(_listName);
-        ListClient.updateListName(listId, _listName);
+        console.log("name change TO-DO");
+
+    }
+
+    const handleDeleteItem = (itemId: number) => {
+        console.log("to-do: ", itemId);
     }
 
     return(
+        status != "pending" && 
         <>
-            <input
-                value={listName}
-                onChange={handleNameChange} // should only fire after focus gone TO-DO
+            <TextInput
+                value={localNameBox}
+                ref={nameBoxRef}
+                onChange={(e) => {setLocalNameBox(e.currentTarget.value);}}
+                onBlur={handleEditName}
+                onKeyDown={(e) => {if(e.key === "Enter") nameBoxRef.current?.blur(); }}
+                placeholder="List name"
+                variant="unstyled"
             />
-            <textarea
-                value={listContents}
-                onChange={handleListChange}
-                onKeyDown={handleListNewLine}
-                rows={20} 
-                cols={30} 
+            <Paper withBorder style={{ height: 250, overflowY: 'auto' }}>
+                <Table>
+                    <Table.Tbody>
+                        {contents.map((content: any) => (
+                            <Table.Tr key={content.id}>
+                                <Table.Td>{content.itemName}</Table.Td>
+                                <Table.Td>
+                                    <Button size="xs" onClick={() => handleDeleteItem(content.id)} />
+                                </Table.Td>
+                            </Table.Tr>
+                        ))}
+                    </Table.Tbody>
+                </Table>
+            </Paper>
+            <TextInput
+                value={inputBox}
+                onChange={(e) => {setInputBox(e.currentTarget.value);}}
+                onKeyDown={(e) => {if(e.key === "Enter") handleCreateItem();}}
+                placeholder="Enter an item or recipe"
             />
         </>
     );

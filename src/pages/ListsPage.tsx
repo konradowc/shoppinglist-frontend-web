@@ -1,10 +1,12 @@
 import { ListView } from "../components/ListView";
 
+import { Center } from "@mantine/core"
+
 export const ListsPage = () => {
 
     return (
-        <div style={{ margin:"auto" }}>
+        <Center style={{width: '100vw'}}>
             <ListView/>
-        </div>
+        </Center>
     );
 };
