@@ -17,7 +17,7 @@ export const useList = (listId: number) => {
     if(!data) console.log("UL: no data yet (this is ok)"); // data likely null on first run
     else {
         // parse
-        console.log("UL: got ", data);
+        //console.log("UL: got ", data);
         name = data.list_name;
 
         contents = data.contents.map((content: any) => { return {id: content.id, 

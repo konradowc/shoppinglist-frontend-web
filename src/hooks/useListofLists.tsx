@@ -18,7 +18,7 @@ export const useListOfLists = (userId: number) => {
     if(!data) console.log("L.O.L. still getting data");
     else {
         // parse
-        console.log("L.O.L. got data: " + data.listIds);
+        //console.log("L.O.L. got data: " + data.listIds);
         listIds = data.listIds;
     }
 

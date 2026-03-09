@@ -27,7 +27,7 @@ class SseService {
         if(Number.isNaN(sentId)) { console.error("ID sent to SseService is NaN (cha)"); return; }
 
         console.log("getChanges got this (invalidating this): ", sentId);
-        
+
         queryClient.invalidateQueries({ "queryKey": ['list', sentId] });
     }
 
@@ -37,8 +37,9 @@ class SseService {
 
         console.log("some list was deleted");
 
-        if(this.serviceUserId)
+        if(this.serviceUserId) {
             queryClient.invalidateQueries({ "queryKey": ['user', this.serviceUserId] });
+        }
     }
 
     private onErrorCallback = (error: Event) => {

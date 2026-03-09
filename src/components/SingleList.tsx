@@ -78,9 +78,16 @@ export const SingleList = ({ listId }: Props) => {
             setLocalNameBox(name);
     }, [name])
 
+    // on list ID change, clear the entry box
+    useEffect(() => {
+        setInputBox("");
+    }, [listId])
+
     const handleCreateItem = async () => {
         console.log("enter input");
         addRow.mutate({newContent: inputBox});
+
+        setInputBox("");
     }
 
     const handleEditName = () => {

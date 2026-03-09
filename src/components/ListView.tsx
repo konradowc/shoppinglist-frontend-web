@@ -11,10 +11,6 @@ import { useAppContext } from "../context/AppContext"
 import { useListOfLists } from "../hooks/useListofLists";
 import { Button, Group, Stack } from "@mantine/core";
 
-type Props = {
-    userId: number
-};
-
 /* component holding all things related to lists */
 export const ListView = () => {
 
@@ -62,29 +58,26 @@ export const ListView = () => {
 
     const createListAndNavigateToIt = async () => { // TO-DO: this will put to back of listoflists for now, change in future
         
-        createList.mutateAsync({ listName: "Untitled List", listContents: [], ownerId: userId });
-        console.log("ListView: created list");
-
-        // (wait for createList to return)
-
-        if(createList.isSuccess) {
-            queryClient.invalidateQueries({ queryKey: ["user", userId] }); // force re-fetch (will take some time)
-            setCurrentListId(createList.data.list_id); // navigate to the new list
-            // TO-DO: pressing <- or -> while the ["user", userId] query is being re-fetched will not be good (would not find our current list ID in list of lists)
-        }
-        else {
-            console.log("not success?");
-        }
-    }
-
-    const deleteListAndNavigateAwayFromIt = () => {
-
-        if(currentListId === null) return; // TS requires
-
-        deleteList.mutateAsync({ listId: currentListId });
+        const createdList = await createList.mutateAsync({ listName: "Untitled List", listContents: [], ownerId: userId });
 
         queryClient.invalidateQueries({ queryKey: ["user", userId] }); // force re-fetch (will take some time)
+        setCurrentListId(createdList.list_id); // navigate to the new list
+        // TO-DO: pressing <- or -> while the ["user", userId] query is being re-fetched will not be good (would not find our current list ID in list of lists)
+        // so need to add optimistic
+    }
 
+    const deleteListAndNavigateAwayFromIt = async () => {
+
+        if(currentListId === null) return; // TS requires
+        await deleteList.mutateAsync({ listId: currentListId });
+
+        // NOTE: this will semi-break upon adding optimistic deletion
+        let newIndex = findListRelativeToGiven(currentListId, -1);
+        if(newIndex === currentListId) // too far OR couldn't find in list (optimistic updated, probably)
+            newIndex = null;
+        setCurrentListId(newIndex);
+
+        queryClient.invalidateQueries({ queryKey: ["user", userId] }); // force re-fetch (will take some time)
     }
 
     // fallback: return old list id
