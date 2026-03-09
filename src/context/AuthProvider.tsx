@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
             console.log("Set userId to " + uidAndPswrd.id + " and pswrd to " + uidAndPswrd.pswrd);
 
             // TO-DO: TEMP location
-            sseServiceSingleton.initializeTemp(uidAndPswrd.id);
+            sseServiceSingleton.initialize(uidAndPswrd.id);
         };
 
         initUserId();//TEMP TO-DO: and SSEService

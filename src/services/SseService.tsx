@@ -4,60 +4,45 @@ import { queryClient } from "../App" // TO-DO
 
 class SseService {
 
-    // TO-DO: remove these
-    listChangeCallback?: (id: number) => void;
-    listDeletedCallback?: () => void;
-
     sseConnection?: EventSource; // keeping it so the EventSource doesn't get garbage collected
     serviceInitialized: boolean = false;
+    serviceUserId?: number;
 
-    public initializeTemp = (userId: number) => { // TO-DO: callback funcs
-        this.initialize(userId, this.onGetChanges, this.onGetDeleted);
-    }
-
-    public initialize = (userId: number, listChangeCallback: (id: number) => void, listDeletedCallback: () => void) => {
+    public initialize = (userId: number) => {
         if(!this.serviceInitialized) {
             this.serviceInitialized = true;
-            
-            this.listChangeCallback = listChangeCallback;
-            this.listDeletedCallback = listDeletedCallback;
+            this.serviceUserId = userId;
 
-            this.sseConnection = SseClient.connectSse(userId, this.onAnyMessageCallback, this.onErrorCallback);
+            this.sseConnection = SseClient.connectSse(userId, 
+                                                    [["changedList", this.onChangedList],
+                                                     ["deletedList", this.onDeletedList]],
+                                                    this.onErrorCallback);
         }
     }
 
-    private onAnyMessageCallback = (event: MessageEvent<any>) => {
-        console.log("sse data: ", event.type, " / ", event.data);
+    // callbacks
 
-        if(event.type == "changedList") { // TO-DO: again, frontend-backend communication
-            const sentId: number = Number(event.data);
-            if(Number.isNaN(sentId)) { console.error("ID sent to SseService is NaN (cha)"); return; }
+    private onChangedList = (event: MessageEvent<any>) => {
+        const sentId: number = Number(event.data);
+        if(Number.isNaN(sentId)) { console.error("ID sent to SseService is NaN (cha)"); return; }
 
-            if(this.listChangeCallback) this.listChangeCallback(sentId);
-        }
-        else if(event.type == "deletedList") {
-            const sentId: number = Number(event.data);
-            if(Number.isNaN(sentId)) { console.error("ID sent to SseService is NaN (del)"); return; }
+        console.log("getChanges got this (invalidating this): ", sentId);
+        
+        queryClient.invalidateQueries({ "queryKey": ['list', sentId] });
+    }
 
-            if(this.listDeletedCallback) this.listDeletedCallback();
-        }
+    private onDeletedList = (event: MessageEvent<any>) => {
+        const sentId: number = Number(event.data);
+        if(Number.isNaN(sentId)) { console.error("ID sent to SseService is NaN (del)"); return; }
+
+        console.log("some list was deleted");
+
+        if(this.serviceUserId)
+            queryClient.invalidateQueries({ "queryKey": ['user', this.serviceUserId] });
     }
 
     private onErrorCallback = (error: Event) => {
         console.log("sse error: ", error);
-    }
-
-    ///
-
-    // TO-DO: temp?
-    private onGetChanges = (id: number) => {
-        console.log("getChanges got this (invalidating this): ", id);
-        queryClient.invalidateQueries({ "queryKey": ['list', id] });
-    }
-
-    private onGetDeleted = () => {
-        console.log("some list was deleted (TO-DO)");
-        // TO-DO-TODAY
     }
 }
 
