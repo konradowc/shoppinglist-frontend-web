@@ -91,9 +91,9 @@ export const SingleList = ({ listId }: Props) => {
     }
 
     const handleEditName = () => {
-
         console.log("name change TO-DO");
 
+        editName.mutate({ newName: localNameBox });
     }
 
     const handleDeleteItem = (itemId: number) => {
