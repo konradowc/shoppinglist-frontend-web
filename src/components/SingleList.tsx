@@ -198,9 +198,13 @@ export const SingleList = ({ listId }: Props) => {
                                     content.expandedItems.map((expandedItem: any) =>
                                             <Table.Tr key={expandedItem.id}>
 
-                                                <Table.Td style={{ width: '100%' }} pl="lg">{"- "+expandedItem.itemName}</Table.Td>
+                                                <Table.Td style={{ width: '100%', fontStyle: "italic" }} pl="lg">{"- "+expandedItem.itemName}</Table.Td>
 
                                                 <Table.Td style={{ width: '100%' }} />
+
+                                                <Table.Td>
+                                                    <></>
+                                                </Table.Td>
 
                                                 {(expandedItem.expandable && !expandedItem.expanded) && 
                                                 <Table.Td ta="right">
