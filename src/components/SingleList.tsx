@@ -6,6 +6,8 @@ import { Button, Paper, Table, TextInput } from '@mantine/core';
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { ListClient } from "../clients/ListClient";
 
+import { IconTrash, IconSparkles } from "@tabler/icons-react";
+
 type Props = {
     listId: number;
 };
@@ -48,7 +50,12 @@ export const SingleList = ({ listId }: Props) => {
         },
         onMutate: (input: { itemId: number}) => {
             queryClient.cancelQueries({ queryKey: ["list", listId] }); 
-            queryClient.setQueryData(["list", listId], contents.filter((content: any) => !(content.id === input.itemId)));
+            queryClient.setQueryData(["list", listId], (prevData: any) => {
+                return {
+                    ...prevData,
+                    contents: contents.filter((content: any) => !(content.id === input.itemId))
+                }
+            });   
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ["list", listId] });
@@ -91,7 +98,7 @@ export const SingleList = ({ listId }: Props) => {
     }
 
     const handleEditName = () => {
-        console.log("name change TO-DO");
+        console.log("name change");
 
         editName.mutate({ newName: localNameBox });
     }
@@ -111,16 +118,41 @@ export const SingleList = ({ listId }: Props) => {
                 onKeyDown={(e) => {if(e.key === "Enter") nameBoxRef.current?.blur(); }}
                 placeholder="List name"
                 variant="unstyled"
+                size="lg"
             />
             <Paper withBorder style={{ height: 250, overflowY: 'auto' }}>
                 <Table>
                     <Table.Tbody>
                         {contents.map((content: any) => (
                             <Table.Tr key={content.id}>
+
                                 <Table.Td>{content.itemName}</Table.Td>
-                                <Table.Td>
-                                    <Button size="xs" onClick={() => handleDeleteItem(content.id)} />
+
+                                <Table.Td style={{ width: '100%' }} />
+
+                                {(content.expandable) && 
+                                <Table.Td ta="right">
+                                    <Button 
+                                        size="xs"
+                                        variant="gradient"
+                                        p={6}
+                                        onClick={() => handleDeleteItem(content.id)} 
+                                    >
+                                        <IconSparkles size={16}/>
+                                    </Button>
+                                </Table.Td>}
+
+                                <Table.Td ta="right">
+                                    <Button 
+                                        size="xs"
+                                        variant="outline"
+                                        p={6}
+                                        onClick={() => handleDeleteItem(content.id)} 
+                                    >
+                                        <IconTrash size={16}/>
+                                    </Button>
                                 </Table.Td>
+
                             </Table.Tr>
                         ))}
                     </Table.Tbody>
