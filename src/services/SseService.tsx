@@ -26,7 +26,7 @@ class SseService {
         const sentId: number = Number(event.data);
         if(Number.isNaN(sentId)) { console.error("ID sent to SseService is NaN (cha)"); return; }
 
-        console.log("getChanges got this (invalidating this): ", sentId);
+        console.log("getChanges got this (invalidating this list's data): ", sentId);
 
         queryClient.invalidateQueries({ "queryKey": ['list', sentId] });
     }

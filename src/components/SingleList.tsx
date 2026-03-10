@@ -104,7 +104,9 @@ export const SingleList = ({ listId }: Props) => {
     }
 
     const handleDeleteItem = (itemId: number) => {
-        console.log("to-do: ", itemId);
+        console.log("deleting item: ", itemId);
+
+        deleteRow.mutate({ itemId: itemId });
     }
 
     return(

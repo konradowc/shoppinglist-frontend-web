@@ -74,7 +74,7 @@ export const ListView = () => {
         // NOTE: this will semi-break upon adding optimistic deletion
         let newIndex = findListRelativeToGiven(currentListId, -1);
         if(newIndex === currentListId) // too far OR couldn't find in list (optimistic updated, probably)
-            newIndex = null;
+            newIndex = null; // TO-DO: will break the page until listIds gets re-fetched -> the useEffect runs
         setCurrentListId(newIndex);
 
         queryClient.invalidateQueries({ queryKey: ["user", userId] }); // force re-fetch (will take some time)
