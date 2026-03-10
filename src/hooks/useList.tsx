@@ -20,9 +20,11 @@ export const useList = (listId: number) => {
         //console.log("UL: got ", data);
         name = data.list_name;
 
-        contents = data.contents.map((content: any) => { return {id: content.id, 
+        contents = data.contents.map((content: any) => { return {id: content.id, // TO-DO: make a DTO?
                                                                  itemName: content.itemName, 
                                                                  expandable: content.expandable, 
+                                                                 expanded: content.expanded,
+                                                                 expandedItems: content.expandedItems, // TO-DO, probably
                                                                  optimistic: false }});
 
         editors = data.editor_ids;

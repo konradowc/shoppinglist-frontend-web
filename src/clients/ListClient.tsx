@@ -75,4 +75,20 @@ export class ListClient {
         ).then(response => response.data)
         .catch(error => console.error(error));
     }
+
+    static async getListItemExpandedOptions(listId: number, itemId: number) {
+        return api.get(`/list/${listId}/item/${itemId}/expandable-options`,
+            // no body
+        ).then(response => response.data)
+        .catch(error => console.error(error));
+    }
+
+    static async createListItemExpandedRecipe(listId: number, itemId: number, recipe: any) { // TO-DO: create DTO for option (the recipe that comes in)
+        return api.post(`/list/${listId}/item/${itemId}/expanded`,
+            {
+                recipe: recipe
+            }
+        ).then(response => response.data)
+        .catch(error => console.error(error));
+    }
 }

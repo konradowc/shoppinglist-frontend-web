@@ -21,7 +21,8 @@ export const SingleList = ({ listId }: Props) => {
     // optimistic update data
     //const [contentsInFlight, setContentsInFlight] = useState();
 
-    // API
+    // API 
+    // TO-DO: hooks not in separate files?
     const addRow = useMutation({
         mutationFn: (input: { newContent: string}) => {
             return ListClient.addListRows(listId, [input.newContent]);
@@ -109,6 +110,17 @@ export const SingleList = ({ listId }: Props) => {
         deleteRow.mutate({ itemId: itemId });
     }
 
+    const handleExpandItem = async (itemId: number) => { // TO-DO: make into a hook? probably not
+        console.log("expanding item", itemId);
+
+        const options = await ListClient.getListItemExpandedOptions(listId, itemId);
+        // (TO-DO: some kind of user choice screen)
+        const ourOption = options.results[0];
+        await ListClient.createListItemExpandedRecipe(listId, itemId, ourOption);
+
+        queryClient.invalidateQueries({ queryKey: ["list", listId] });
+    }
+
     return(
         status != "pending" && 
         <>
@@ -132,18 +144,19 @@ export const SingleList = ({ listId }: Props) => {
 
                                 <Table.Td style={{ width: '100%' }} />
 
-                                {(content.expandable) && 
+                                {(content.expandable && !content.expanded) && 
                                 <Table.Td ta="right">
                                     <Button 
                                         size="xs"
                                         variant="gradient"
                                         p={6}
-                                        onClick={() => handleDeleteItem(content.id)} 
+                                        onClick={() => handleExpandItem(content.id)} 
                                     >
                                         <IconSparkles size={16}/>
                                     </Button>
                                 </Table.Td>}
 
+                                {!content.optimistic &&
                                 <Table.Td ta="right">
                                     <Button 
                                         size="xs"
@@ -153,7 +166,7 @@ export const SingleList = ({ listId }: Props) => {
                                     >
                                         <IconTrash size={16}/>
                                     </Button>
-                                </Table.Td>
+                                </Table.Td>}
 
                             </Table.Tr>
                         ))}
