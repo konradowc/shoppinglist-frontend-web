@@ -163,6 +163,7 @@ export const SingleList = ({ listId }: Props) => {
                 onChange={(e) => {setInputBox(e.currentTarget.value);}}
                 onKeyDown={(e) => {if(e.key === "Enter") handleCreateItem();}}
                 placeholder="Enter an item or recipe"
+                autoFocus
             />
         </>
     );
