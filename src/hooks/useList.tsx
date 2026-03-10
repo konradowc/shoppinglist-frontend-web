@@ -25,6 +25,7 @@ export const useList = (listId: number) => {
                                                                  expandable: content.expandable, 
                                                                  expanded: content.expanded,
                                                                  expandedItems: content.expandedItems, // TO-DO, probably
+                                                                 itemChild: content.anItemChild,
                                                                  optimistic: false }});
 
         editors = data.editor_ids;
