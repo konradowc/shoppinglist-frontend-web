@@ -6,7 +6,7 @@ import { Accordion, Button, Paper, Table, TextInput } from '@mantine/core';
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { ListClient } from "../clients/ListClient";
 
-import { IconTrash, IconSparkles } from "@tabler/icons-react";
+import { IconTrash, IconSparkles, IconCaretDownFilled } from "@tabler/icons-react";
 
 type Props = {
     listId: number;
@@ -160,6 +160,24 @@ export const SingleList = ({ listId }: Props) => {
                                             <IconSparkles size={16}/>
                                         </Button>
                                     </Table.Td>}
+
+                                    {(content.expandable && content.expanded) && 
+                                    <Table.Td ta="right">
+                                        <Button 
+                                            size="xs"
+                                            variant="transparent"
+                                            p={6}
+                                            onClick={() => { if(!expandedRows.includes(content.id)) {
+                                                    setExpandedRows([...expandedRows, content.id]); 
+                                                }
+                                                else {
+                                                    setExpandedRows(expandedRows.filter((row) => row != content.id));
+                                                }
+                                            }} 
+                                        >
+                                            <IconCaretDownFilled size={16}/>
+                                        </Button>
+                                    </Table.Td>} 
 
                                     {!content.optimistic &&
                                     <Table.Td ta="right">
