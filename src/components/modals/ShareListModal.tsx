@@ -1,6 +1,6 @@
-import { FormEvent, useState, useEffect } from 'react'
+import { type FormEvent, useState, useEffect } from 'react'
 
-import { ListClient } from "../../clients/ListClient"
+import { ListClient } from "../../clients/ListClient.js"
 import { Button, Title } from '@mantine/core';
 
 type Props = {

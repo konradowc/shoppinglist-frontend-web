@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getBackendURL } from './env';
+import { getBackendURL } from './env.js';
 
 export const api = axios.create({
     baseURL: getBackendURL(),

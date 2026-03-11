@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { INVALID_USER_ID } from "../constants/constants"
+import { INVALID_USER_ID } from "../constants/constants.js"
 
-import { ListClient } from "../clients/ListClient"
+import { ListClient } from "../clients/ListClient.js"
 
 export const useListOfLists = (userId: number) => {
     

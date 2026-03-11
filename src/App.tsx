@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { ListsPage } from "./pages/ListsPage"
-import { ErrorPage } from "./pages/ErrorPage"
-import { AppProvider } from "./context/AppProvider"
-import { AuthProvider } from "./context/AuthProvider"
+import { ListsPage } from "./pages/ListsPage.js"
+import { ErrorPage } from "./pages/ErrorPage.js"
+import { AppProvider } from "./context/AppProvider.js"
+import { AuthProvider } from "./context/AuthProvider.js"
 
 import { MantineProvider, createTheme } from '@mantine/core';
 import '@mantine/core/styles.css';

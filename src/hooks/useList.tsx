@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
-import { ListClient } from "../clients/ListClient"
+import { ListClient } from "../clients/ListClient.js"
 
-import { INVALID_LIST_ID } from "../constants/constants"
+import { INVALID_LIST_ID } from "../constants/constants.js"
 
 export const useList = (listId: number) => {
     const { data, error, status } = useQuery({

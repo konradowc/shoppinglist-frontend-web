@@ -1,4 +1,4 @@
-import { sseNewConnection } from "./api/api"
+import { sseNewConnection } from "./api/api.js"
 
 export class SseClient {
 

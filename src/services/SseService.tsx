@@ -1,6 +1,6 @@
-import { SseClient } from "../clients/SseClient"
+import { SseClient } from "../clients/SseClient.js"
 
-import { queryClient } from "../App" // TO-DO
+import { queryClient } from "../App.js" // TO-DO
 
 class SseService {
 

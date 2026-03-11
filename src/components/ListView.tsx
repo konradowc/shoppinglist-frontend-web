@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query"
 
-import { SingleList } from "./SingleList";
-import { ListClient } from "../clients/ListClient"
-import { ShareListModal } from "./modals/ShareListModal"
+import { SingleList } from "./SingleList.js";
+import { ListClient } from "../clients/ListClient.js"
+import { ShareListModal } from "./modals/ShareListModal.js"
 
-import { INVALID_LIST_ID, INVALID_USER_ID } from "../constants/constants"
-
-import { useAppContext } from "../context/AppContext"
-import { useListOfLists } from "../hooks/useListofLists";
+import { useAppContext } from "../context/AppContext.js"
+import { useListOfLists } from "../hooks/useListofLists.js";
 import { Button, Group, Stack } from "@mantine/core";
 
 /* component holding all things related to lists */

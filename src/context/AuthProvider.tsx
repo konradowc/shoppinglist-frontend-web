@@ -1,14 +1,14 @@
 import { useEffect, useContext } from "react"
-import { PropsWithChildren, useState } from "react"
+import { type PropsWithChildren, useState } from "react"
 
-import { AuthContext } from "./AuthContext"
+import { AuthContext } from "./AuthContext.js"
 
-import { setUserCookies, getUserCookies } from "../utils/cookiesUtils"
+import { setUserCookies, getUserCookies } from "../utils/cookiesUtils.js"
 //import generator from "generate-password"
-import { UserClient } from "../clients/UserClient"
-import { useAppContext } from "../context/AppContext"
+import { UserClient } from "../clients/UserClient.js"
+import { useAppContext } from "../context/AppContext.js"
 
-import { sseServiceSingleton } from "../services/SseService"
+import { sseServiceSingleton } from "../services/SseService.js"
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
 

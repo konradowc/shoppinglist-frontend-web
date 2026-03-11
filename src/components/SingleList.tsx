@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 
-import { useList } from "../hooks/useList"
+import { useList } from "../hooks/useList.js"
 
 import { Accordion, Button, Paper, Table, TextInput } from '@mantine/core';
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { ListClient } from "../clients/ListClient";
+import { ListClient } from "../clients/ListClient.js";
 
 import { IconTrash, IconSparkles, IconCaretDownFilled } from "@tabler/icons-react";
 

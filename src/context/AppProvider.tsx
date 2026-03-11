@@ -1,7 +1,7 @@
-import { AppContext } from "./AppContext";
-import { PropsWithChildren, useState } from "react";
+import { AppContext } from "./AppContext.js";
+import { type PropsWithChildren, useState } from "react";
 
-import { INVALID_USER_ID } from "../constants/constants"
+import { INVALID_USER_ID } from "../constants/constants.js"
 
 export const AppProvider = ({ children }: PropsWithChildren) => {
 

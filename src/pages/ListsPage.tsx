@@ -1,4 +1,4 @@
-import { ListView } from "../components/ListView";
+import { ListView } from "../components/ListView.js";
 
 import { Center } from "@mantine/core"
 
