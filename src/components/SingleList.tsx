@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { useList } from "../hooks/useList.js"
 
-import { Accordion, Button, Paper, Table, TextInput } from '@mantine/core';
+import { Button, Paper, Table, TextInput } from '@mantine/core';
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { ListClient } from "../clients/ListClient.js";
 
@@ -126,7 +126,7 @@ export const SingleList = ({ listId }: Props) => {
     return(
         status != "pending" && 
         <>
-            <TextInput
+            <TextInput data-cy="name-box"
                 value={localNameBox}
                 ref={nameBoxRef}
                 onChange={(e) => {setLocalNameBox(e.currentTarget.value);}}

@@ -122,16 +122,19 @@ export const ListView = () => {
         currentListId != null && // ONLY render if listIdsArray has contents & currentListId is not Invalid: note this will cause problems if userId updates (out of sync due to useState)
         <>
             <Group>
-                <Button name="leftListBtn" onClick={handleLeftListButton}>&lt;</Button>
+                <Button name="leftListBtn" data-cy="left-btn" onClick={handleLeftListButton}>&lt;</Button>
                 <Stack>
-                    <SingleList listId={currentListId} />
+                    <div data-cy="singlelist-component" data-cy-listid={currentListId}
+                    style={{ width: '100%', display: 'contents' }}>
+                        <SingleList listId={currentListId} />
+                    </div>
                     <Group>
-                        <Button name="newListBtn" onClick={handleNewListButton}>New List</Button>
-                        <Button name="delListBtn" onClick={handleDeleteListButton}>Delete</Button>
-                        <Button name="shareBtn" onClick={handleShareButton}>Share</Button>
+                        <Button name="newListBtn" data-cy="new-list-btn" onClick={handleNewListButton}>New List</Button>
+                        <Button name="delListBtn" data-cy="del-list-btn" onClick={handleDeleteListButton}>Delete</Button>
+                        <Button name="shareBtn" data-cy="share-list-btn" onClick={handleShareButton}>Share</Button>
                     </Group>
                 </Stack>
-                <Button name="rightListBtn" onClick={handleRightListButton}>&gt;</Button>  
+                <Button name="rightListBtn" data-cy="right-btn" onClick={handleRightListButton}>&gt;</Button>  
                 {shareModalOpen && 
                     <ShareListModal listId={currentListId}></ShareListModal>
                 } 
