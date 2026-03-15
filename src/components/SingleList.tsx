@@ -138,20 +138,21 @@ export const SingleList = ({ listId }: Props) => {
             />
             <Paper withBorder style={{ height: 250, overflowY: 'auto' }}>
                 <Table>
-                    <Table.Tbody>
+                    <Table.Tbody data-cy="item-table">
                         {contents
                         .filter((content: any) => !content.itemChild)
                         .map((content: any) => (
                             <>
-                                <Table.Tr key={content.id}>
+                                <Table.Tr
+                                key={content.id}>
 
-                                    <Table.Td style={{ width: '100%' }} >{content.itemName}</Table.Td>
+                                    <Table.Td data-cy={"table-elem-"+content.itemName} style={{ width: '100%' }} >{content.itemName}</Table.Td>
 
                                     <Table.Td style={{ width: '100%' }} />
 
                                     {(content.expandable && !content.expanded) && 
                                     <Table.Td ta="right">
-                                        <Button 
+                                        <Button data-cy={"expand-btn-"+content.itemName}
                                             size="xs"
                                             variant="gradient"
                                             p={6}
@@ -163,7 +164,7 @@ export const SingleList = ({ listId }: Props) => {
 
                                     {(content.expandable && content.expanded) && 
                                     <Table.Td ta="right">
-                                        <Button 
+                                        <Button data-cy={"item-dropdown-btn-"+content.itemName}
                                             size="xs"
                                             variant="transparent"
                                             p={6}
@@ -181,7 +182,7 @@ export const SingleList = ({ listId }: Props) => {
 
                                     {!content.optimistic &&
                                     <Table.Td ta="right">
-                                        <Button 
+                                        <Button data-cy={"del-item-btn-"+content.itemName}
                                             size="xs"
                                             variant="outline"
                                             p={6}
@@ -198,7 +199,8 @@ export const SingleList = ({ listId }: Props) => {
                                     content.expandedItems.map((expandedItem: any) =>
                                             <Table.Tr key={expandedItem.id}>
 
-                                                <Table.Td style={{ width: '100%', fontStyle: "italic" }} pl="lg">{"- "+expandedItem.itemName}</Table.Td>
+                                                <Table.Td data-cy={"table-elem-"+expandedItem.itemName}
+                                                style={{ width: '100%', fontStyle: "italic" }} pl="lg">{"- "+expandedItem.itemName}</Table.Td>
 
                                                 <Table.Td style={{ width: '100%' }} />
 
@@ -219,7 +221,8 @@ export const SingleList = ({ listId }: Props) => {
                                                 </Table.Td>}
 
                                                 {!expandedItem.optimistic &&
-                                                <Table.Td ta="right">
+                                                <Table.Td data-cy={"del-item-btn-"+expandedItem.itemName}
+                                                ta="right">
                                                     <Button 
                                                         size="xs"
                                                         variant="outline"
@@ -239,7 +242,7 @@ export const SingleList = ({ listId }: Props) => {
                     </Table.Tbody>
                 </Table>
             </Paper>
-            <TextInput
+            <TextInput data-cy="input-box"
                 value={inputBox}
                 onChange={(e) => {setInputBox(e.currentTarget.value);}}
                 onKeyDown={(e) => {if(e.key === "Enter") handleCreateItem();}}
