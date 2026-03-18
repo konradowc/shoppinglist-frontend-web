@@ -90,7 +90,7 @@ describe('Item functionality', () => {
         cy.wait('@contentUpload')
         cy.wait(300)
 
-        // for now, just won't exist - TO-DO: error msg
+        // for now, just won't exist - TO-DO: handle error msg
         cy.get('[data-cy="table-elem-'+reallyLongString+'"]').should('not.exist')
     })
 })

@@ -29,7 +29,7 @@ export const ShareListModal = ({ listId }: Props) => {
     }
 
     const handleSendButton = async () => {
-        if(editors.length == 0) { console.log("Empty editors arr"); return; } // empty TO-DO: make this a constant?
+        if(editors.length == 0) { console.log("Empty editors arr"); return; } // empty
         const newEditors = [...editors, shareTextField]; // TO-DO: no checking here
         
         const updatedList = await ListClient.updateListEditors(listId, newEditors);

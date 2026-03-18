@@ -18,11 +18,8 @@ export const SingleList = ({ listId }: Props) => {
     // server data
     const { name, contents, editors, status } = useList(listId); // wrapper for useQuery: automatically updates on listId change
     const queryClient = useQueryClient();
-    // optimistic update data
-    //const [contentsInFlight, setContentsInFlight] = useState();
 
     // API 
-    // TO-DO: hooks not in separate files?
     const addRow = useMutation({
         mutationFn: (input: { newContent: string}) => {
             return ListClient.addListRows(listId, [input.newContent]);
@@ -32,7 +29,7 @@ export const SingleList = ({ listId }: Props) => {
             queryClient.setQueryData(["list", listId], (prevData: any) => {
                 return {
                     ...prevData,
-                    contents: [...contents, {id: crypto.randomUUID(), // in very rare case of collision, may be brief visual glitch before server fetch
+                    contents: [...contents, {id: crypto.randomUUID(),
                                             itemName: input.newContent,
                                             expandable: false,
                                             optimistic: true
@@ -112,7 +109,7 @@ export const SingleList = ({ listId }: Props) => {
         deleteRow.mutate({ itemId: itemId });
     }
 
-    const handleExpandItem = async (itemId: number) => { // TO-DO: make into a hook? probably not
+    const handleExpandItem = async (itemId: number) => {
         console.log("expanding item", itemId);
 
         const options = await ListClient.getListItemExpandedOptions(listId, itemId);

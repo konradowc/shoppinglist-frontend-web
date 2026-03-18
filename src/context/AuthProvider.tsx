@@ -4,7 +4,6 @@ import { type PropsWithChildren, useState } from "react"
 import { AuthContext } from "./AuthContext.js"
 
 import { setUserCookies, getUserCookies } from "../utils/cookiesUtils.js"
-//import generator from "generate-password"
 import { UserClient } from "../clients/UserClient.js"
 import { useAppContext } from "../context/AppContext.js"
 
@@ -18,20 +17,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const makeNewUserAndReturnId = async (): Promise<{id: number, pswrd: string}> => {
         // make a password (auto-generated)
 
-        // temporary (?) manual solution: just numbers TO-DO
+        // TO-DO: better generation
         let password = "";
         for(let i = 0; i < 10; i++) {
             password += Math.floor(Math.random() * 9).toString();
         }
-        console.log("Generated password: " + password);
-        /*
-        const password = generator.generate({
-            length: 10,
-            numbers: true,
-            symbols: true,
-            uppercase: true,
-            lowercase: true,
-        }); */
 
         const user = await UserClient.makeNewUser(password);
         return {id: user.user_id, pswrd: password};

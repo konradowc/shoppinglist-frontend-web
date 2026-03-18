@@ -2,8 +2,7 @@ import { api } from './api/api.js'
 
 export class ListClient {
 
-    // TO-DO: hardcoded, should use DTO?
-    // note: listIds (number type) do not match size of long in Java (and possibly not size of number in Postgres)
+    // TO-DO: hardcoded, should use DTO
 
     static async getList(listId : number) {
         console.log("Getting list " + listId);
@@ -83,7 +82,7 @@ export class ListClient {
         .catch(error => console.error(error));
     }
 
-    static async createListItemExpandedRecipe(listId: number, itemId: number, recipe: any) { // TO-DO: create DTO for option (the recipe that comes in)
+    static async createListItemExpandedRecipe(listId: number, itemId: number, recipe: any) {
         return api.post(`/list/${listId}/item/${itemId}/expanded`,
             {
                 recipe: recipe
