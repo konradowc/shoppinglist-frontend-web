@@ -9,12 +9,12 @@ Current features:<br/>
 
 ## Set-up instructions
 
-**Backend setup**
+**Backend setup**<br/>
 1) Follow the [backend](https://github.com/konradowc/shoppinglist-frontend-web/blob/main/README.md#backend) instructions first<br/>
 
-**Basic**
-2) Run 'npm install'<br/>
-3) Run 'npm run dev'<br/>
+**Basic**<br/>
+1) Run 'npm install'<br/>
+2) Run 'npm run dev'<br/>
 
 ## Backend
 
