@@ -1,16 +1,40 @@
-# React + Vite
+# SLOShoppr (frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple, convenient, and easy-to-use grocery list web application.<br/>
+Current features:<br/>
+  -Unlimited lists per person, automatically saved<br/>
+  -Able to share with other users<br/>
+  -Live editing with other users<br/>
+  -Able to expand recipe prompts by clicking the "recipe" button<br/>
 
-Currently, two official plugins are available:
+## Set-up instructions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Backend setup**<br/>
+1) Follow the [backend](https://github.com/konradowc/shoppinglist-frontend-web?tab=readme-ov-file#backend) instructions first<br/>
 
-## React Compiler
+**Basic**<br/>
+1) Run 'npm install'<br/>
+2) Run 'npm run dev'<br/>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Backend
 
-## Expanding the ESLint configuration
+The backend can be found here: https://github.com/konradowc/shoppinglist-backend<br/>
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Related documents
+
+[Project Outline](https://drive.google.com/file/d/1c2ZsYgjY9Gw2oEDF-npaPcxTBfnjbFWw/view?usp=drive_link)<br/>
+[User Stories](https://drive.google.com/file/d/1cgUP0wg1NyrjjQ5erWqEXhD8SJuyzDLd/view?usp=drive_link)<br/>
+[Legacy Design Doc](https://drive.google.com/file/d/17oOvie43ybRJL0RVARfmCA9bZHNv4rqz/view?usp=drive_link)<br/>
+[Interviews](https://drive.google.com/file/d/1QQc2wC7T8QyvncVm_DWnr3ticbMF7pZl/view?usp=drive_link)<br/>
+[Initial Project Timeline](https://drive.google.com/file/d/1ckU2WQK_dcD5dOwlNEfl3fOggXQhNtTq/view?usp=drive_link)<br/>
+[Current Project Timeline](https://drive.google.com/file/d/1AKYBaauvi4zk3a5W42ZWPhHdVG0bZYrd/view?usp=drive_link)<br/>
+
+## Final turn-in
+
+[Final presentation](https://docs.google.com/presentation/d/1xUU7Ju4lamsfwXhGxXb6eWRu8tbn4ohTTOOINnOsMJM/edit?usp=sharing)<br/>
+[Final essay](https://docs.google.com/document/d/1NQXclBL154q7_f6sHgu1j97jBX5hgaoHam9rFo_rj_E/edit?usp=drive_link)<br/>
+
+
+
+
+
