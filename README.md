@@ -10,7 +10,7 @@ Current features:<br/>
 ## Set-up instructions
 
 **Backend setup**<br/>
-1) Follow the [backend](https://github.com/konradowc/shoppinglist-frontend-web/blob/main/README.md#backend) instructions first<br/>
+1) Follow the [backend](https://github.com/konradowc/shoppinglist-frontend-web?tab=readme-ov-file#backend) instructions first<br/>
 
 **Basic**<br/>
 1) Run 'npm install'<br/>
