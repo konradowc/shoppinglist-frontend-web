@@ -9,7 +9,7 @@ Current features:<br/>
 
 ## Set-up instructions
 
-1) Clone the repository, alongside the backend: [Backend](https://github.com/konradowc/shoppinglist-frontend-web/blob/main/README.md#backend) (follow the separate instructions there)<br/>
+1) Clone the repository, alongside the [backend](https://github.com/konradowc/shoppinglist-frontend-web/blob/main/README.md#backend) (follow the separate instructions there)<br/>
 2) npm install<br/>
 3) npm run dev<br/>
 
