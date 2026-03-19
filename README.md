@@ -32,7 +32,7 @@ The backend can be found here: https://github.com/konradowc/shoppinglist-backend
 ## Final turn-in
 
 [Final presentation](https://docs.google.com/presentation/d/1xUU7Ju4lamsfwXhGxXb6eWRu8tbn4ohTTOOINnOsMJM/edit?usp=sharing)<br/>
-[Final essay](https://docs.google.com/document/d/1NQXclBL154q7_f6sHgu1j97jBX5hgaoHam9rFo_rj_E/edit?usp=drive_link)<br/>
+[Final essay](https://drive.google.com/file/d/1zFEwlkNwYhe4miv9AmJN8LGyA5Mm4Kk8/view?usp=sharing)<br/>
 
 
 
