@@ -7,8 +7,6 @@ import { setUserCookies, getUserCookies } from "../utils/cookiesUtils.js"
 import { UserClient } from "../clients/UserClient.js"
 import { useAppContext } from "../context/AppContext.js"
 
-import { sseServiceSingleton } from "../services/SseService.js"
-
 export const AuthProvider = ({ children }: PropsWithChildren) => {
 
     // get appContext for the UserID
@@ -17,7 +15,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const makeNewUserAndReturnId = async (): Promise<{id: number, pswrd: string}> => {
         // make a password (auto-generated)
 
-        // TO-DO: better generation
+        // TO-DO: better password
         let password = "";
         for(let i = 0; i < 10; i++) {
             password += Math.floor(Math.random() * 9).toString();
@@ -28,7 +26,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     };
 
     /* INITIALIZATION OF USER ID: find userID stored in cookie, and give to AppContext */
-    // may put somewhere else
     useEffect(() => {
 
         const initUserId = async () => {
@@ -40,12 +37,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
             }
             setUserId(uidAndPswrd.id); // sets app (global) context's userId for all components
             console.log("Set userId to " + uidAndPswrd.id + " and pswrd to " + uidAndPswrd.pswrd);
-
-            // TO-DO: TEMP location
-            sseServiceSingleton.initialize(uidAndPswrd.id);
         };
 
-        initUserId();//TEMP TO-DO: and SSEService
+        initUserId();
 
     }, []); // runs only once
 

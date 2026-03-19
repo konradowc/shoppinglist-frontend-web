@@ -1,6 +1,5 @@
+import type { QueryClient } from "@tanstack/react-query"; // note: this does not import the queryClient as created in App.tsx, only the data type. it is dependency injected
 import { SseClient } from "../clients/SseClient.js"
-
-import { queryClient } from "../App.js" // TO-DO
 
 class SseService {
 
@@ -8,10 +7,13 @@ class SseService {
     serviceInitialized: boolean = false;
     serviceUserId?: number;
 
-    public initialize = (userId: number) => {
+    queryClient?: QueryClient; // to dependency inject
+
+    public initialize = (userId: number, queryClient: QueryClient) => {
         if(!this.serviceInitialized) {
             this.serviceInitialized = true;
             this.serviceUserId = userId;
+            this.queryClient = queryClient;
 
             this.sseConnection = SseClient.connectSse(userId, 
                                                     [["changedList", this.onChangedList],
@@ -28,7 +30,7 @@ class SseService {
 
         console.log("getChanges got this (invalidating this list's data): ", sentId);
 
-        queryClient.invalidateQueries({ "queryKey": ['list', sentId] });
+        this.queryClient.invalidateQueries({ "queryKey": ['list', sentId] });
     }
 
     private onDeletedList = (event: MessageEvent<any>) => {
@@ -38,7 +40,7 @@ class SseService {
         console.log("some list was deleted");
 
         if(this.serviceUserId) {
-            queryClient.invalidateQueries({ "queryKey": ['user', this.serviceUserId] });
+            this.queryClient.invalidateQueries({ "queryKey": ['user', this.serviceUserId] });
         }
     }
 

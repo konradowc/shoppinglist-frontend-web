@@ -9,13 +9,19 @@ import '@mantine/core/styles.css';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-export const queryClient = new QueryClient(); // TO-DO: exporting this
 
+import { SseInitializer } from "./services/initializers/SseInitializer.js"
+
+// make React Query Client
+const queryClient = new QueryClient();
+
+// make Mantine theme
 const theme = createTheme({
   primaryColor: 'blue',
   defaultRadius: 'md', // roundness of edges
 });
 
+// make the app
 export const App = () => {
 
   return (
@@ -24,6 +30,7 @@ export const App = () => {
       <AppProvider>
         <AuthProvider>
           <MantineProvider theme={theme}>
+            <SseInitializer/>
             <BrowserRouter>
               <Routes>
                 <Route
